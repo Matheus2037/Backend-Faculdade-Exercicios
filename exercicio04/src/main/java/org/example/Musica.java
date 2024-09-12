@@ -25,4 +25,9 @@ public class Musica {
     public void setArtista(String artista){
         this.artista = artista;
     }
+
+    @Override
+    public String toString() {
+        return "Música: " + titulo + " - Artista: " + artista;
+    }
 }
