@@ -8,31 +8,35 @@ public class Main {
         Scanner scanner = new Scanner(System.in);
         MusicCloud musicCloud = new MusicCloud();
 
-        musicCloud.setMusicasDisponiveis(new Musica("Teste Titulo 1", "Teste Artista 1"));
-        musicCloud.setMusicasDisponiveis(new Musica("Teste Titulo 2", "Teste Artista 2"));
-        musicCloud.setMusicasDisponiveis(new Musica("Teste Titulo 3", "Teste Artista 3"));
-        musicCloud.setMusicasDisponiveis(new Musica("Teste Titulo 4", "Teste Artista 4"));
+        musicCloud.setMusicasDisponiveis(new Musica("Bad", "Michael Jackson"));
+        musicCloud.setMusicasDisponiveis(new Musica("Stay", "Rihanna ft. Mikky Ekko"));
+        musicCloud.setMusicasDisponiveis(new Musica("Happier", "Marshmello ft. Bastille"));
+        musicCloud.setMusicasDisponiveis(new Musica("Shape", "Ed Sheeran"));
+
+        System.out.print("Nome da Playlist: ");
+        String nomePlaylist = scanner.nextLine();
+
+        Playlist playlist = new Playlist(nomePlaylist, musicCloud);
 
         while (true){
             try{
-                System.out.print("Nome da Playlist: ");
-                String nomePlaylist = scanner.nextLine();
-
-                Playlist playlist = new Playlist(nomePlaylist, musicCloud);
 
                 System.out.println(musicCloud.getMusicasDisponiveis());
 
                 System.out.print("Qual o titulo/nome da musica: ");
                 String tituloMusica = scanner.nextLine();
 
+                boolean musicaEncontrada = false;
+
                 for (Musica musica : musicCloud.getMusicasDisponiveis()){
-                    if (musica.getTitulo().equals(tituloMusica)){
-                        musicCloud.setMusicasDisponiveis(musica);
+                    if (musica.getTitulo().equalsIgnoreCase(tituloMusica)){
+                        playlist.addMusicas(musica);
+                        musicaEncontrada = true;
                         break;
-                    }else{
-                        System.out.println("Musica não encontrada.");
-                        continue;
                     }
+                }
+                if (!musicaEncontrada) {
+                    System.out.println("Música não encontrada.");
                 }
             }
             catch (Exception e) {
@@ -41,6 +45,8 @@ public class Main {
             System.out.print("Deseja continuar? (s/n): ");
             String continuar = scanner.nextLine();
             if (!continuar.equalsIgnoreCase("s")) {
+                System.out.println("Sua playlist "+ playlist.getNome() + " ficou: \n" +
+                        playlist.getMusicas());
                 break;
             }
         }
