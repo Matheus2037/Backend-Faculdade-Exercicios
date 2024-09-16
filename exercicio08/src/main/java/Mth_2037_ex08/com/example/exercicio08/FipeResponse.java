@@ -1,8 +1,12 @@
 package Mth_2037_ex08.com.example.exercicio08;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class FipeResponse {
+    @JsonProperty("Valor")
     private String valor;
-    private String mes;
+
+    @JsonProperty("MesReferencia")
+    private String mesReferencia;
 
     // Getters e Setters
     public String getValor() {
@@ -13,11 +17,11 @@ public class FipeResponse {
         this.valor = valor;
     }
 
-    public String getMes() {
-        return mes;
+    public String getMesReferencia() {
+        return mesReferencia;
     }
 
-    public void setMes(String mes) {
-        this.mes = mes;
+    public void setMesReferencia(String mesReferencia) {
+        this.mesReferencia = mesReferencia;
     }
 }

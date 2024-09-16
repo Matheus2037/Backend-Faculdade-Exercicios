@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Arrays;
 
@@ -16,12 +18,18 @@ import java.util.Arrays;
 @RequestMapping("/fipe")
 public class FipeController {
 
+    private static final Logger logger = LoggerFactory.getLogger(FipeController.class);
+
     @Autowired
     private RestTemplate restTemplate;
 
     @PostMapping("/valor")
     public ResponseEntity<FipeResponse> getValorFipe(@RequestBody CarroRequest carroRequest) {
+        logger.info("Recebendo requisição para marca: {}, modelo: {}, ano: {}", carroRequest.getMarca(), carroRequest.getModelo(), carroRequest.getAno());
+
         Marca[] marcas = restTemplate.getForObject("https://parallelum.com.br/fipe/api/v1/carros/marcas", Marca[].class);
+        logger.info("Marcas recebidas: {}", Arrays.toString(marcas));
+
         Marca marca = Arrays.stream(marcas)
                 .filter(m -> m.getNome().equalsIgnoreCase(carroRequest.getMarca()))
                 .findFirst()
@@ -32,6 +40,8 @@ public class FipeController {
                 ModeloResponse.class,
                 marca.getCodigo()
         );
+        logger.info("Modelos recebidos para a marca {}: {}", marca.getNome(), modeloResponse.getModelos());
+
         Modelo modelo = modeloResponse.getModelos().stream()
                 .filter(m -> m.getNome().equalsIgnoreCase(carroRequest.getModelo()))
                 .findFirst()
@@ -43,8 +53,10 @@ public class FipeController {
                 marca.getCodigo(),
                 modelo.getCodigo()
         );
+        logger.info("Anos recebidos para o modelo {}: {}", modelo.getNome(), Arrays.toString(anos));
+
         Ano ano = Arrays.stream(anos)
-                .filter(a -> a.getNome().contains(String.valueOf(carroRequest.getAno())))
+                .filter(a -> a.getNome().equalsIgnoreCase(carroRequest.getAno()))
                 .findFirst()
                 .orElseThrow(() -> new RuntimeException("Ano não encontrado"));
 
